@@ -26,5 +26,30 @@ pipeline {
         )
       }
     }
+    stage('GitDownload') {
+      steps {
+        dir(path: 'C:\\Devaraj\\Test\\Git_Download\\') {
+          git(url: 'https://github.com/TestOrg-Devaraj/StoreVBS_ToRunfromBlueOcean.git', branch: 'master', credentialsId: 'devarajranganathan')
+        }
+        
+      }
+    }
+    stage('ExecuteGitContents') {
+      steps {
+        dir(path: 'C:\\Devaraj\\Test\\Git_Download\\') {
+          waitUntil() {
+            fileExists 'c.vbs'
+          }
+          
+          bat(script: 'c.vbs', returnStatus: true, returnStdout: true)
+        }
+        
+      }
+    }
+    stage('CloseConfirmation') {
+      steps {
+        input(message: 'Can the Pipeline execution be closed', ok: 'Yes')
+      }
+    }
   }
 }
