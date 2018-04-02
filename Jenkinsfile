@@ -36,14 +36,26 @@ pipeline {
     }
     stage('ExecuteGitContents') {
       steps {
-        dir(path: 'C:\\Devaraj\\Test\\Git_Download\\') {
-          waitUntil() {
-            fileExists 'c.vbs'
+        parallel(
+          "ExecuteGitContents": {
+            dir(path: 'C:\\Devaraj\\Test\\Git_Download\\') {
+              waitUntil() {
+                fileExists 'c.vbs'
+              }
+              
+              bat(script: 'c.vbs', returnStatus: true, returnStdout: true)
+            }
+            
+            
+          },
+          "Exec_D": {
+            dir(path: 'C:\\Devaraj\\Test\\') {
+              bat(script: 'd.vbs', returnStatus: true, returnStdout: true)
+            }
+            
+            
           }
-          
-          bat(script: 'c.vbs', returnStatus: true, returnStdout: true)
-        }
-        
+        )
       }
     }
     stage('CloseConfirmation') {
